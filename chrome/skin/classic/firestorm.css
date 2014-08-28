@@ -1,0 +1,293 @@
+/* See license.txt for terms of usage */
+
+/*************************************************************************************************/
+
+/* Style applied on the panel node.
+   Rule syntax: .panelNode-<ext-id> */
+
+.panelNode-firestorm{
+  padding:7px;
+}
+
+.center {
+  text-align: center;
+}
+
+h1 {
+  border-bottom: 0px;
+}
+
+.functionTreeTable{
+  width:100%;
+}
+
+.treeRow:hover{
+  background-color: #E8E6F7;
+  cursor: pointer;
+}
+
+tr[level="0"]:hover{
+  background-color: #FFFFFF;
+}
+
+.selected {
+  background-color: #E6E3FF;
+}
+
+.treeRow.isUsedFunction:hover{
+  background-color: #FFFFFF;
+}
+
+.treeRow.hasChildren .treeLabel {
+  background-image: url(chrome://firebug/skin/win/twistyClosed.svg);
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.treeRow.hasChildren.opened .treeLabel{
+  background-image: url(chrome://firebug/skin/win/twistyOpen.svg);
+}
+
+.treeRow .treeLabel {
+  padding-left: 18px;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+
+.treeLabel{
+  color: #38B017;
+}
+
+.treeLabel.isUsedFunction{
+  color: rgb(255, 171, 0);
+}
+.isUsedFunction:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.treeRow.hasChildren .treeLabel:hover{
+  text-decoration: underline;
+}
+
+/*************************************************************************************************/
+/*
+  Fuzzing report css
+ */
+
+.fuzzingReport{
+  padding: 10px;
+}
+
+.fuzzingResultsTable{
+  width: 100%;
+}
+
+.fs-closed{
+  background-image: url(chrome://firebug/skin/win/twistyClosed.svg);
+  white-space: nowrap;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  cursor: pointer;
+  padding-right: 2px;
+  width: 11px;
+  height: 11px;
+}
+
+.fs-opened{
+  background-image: url(chrome://firebug/skin/win/twistyOpen.svg);
+  white-space: nowrap;
+  background-repeat: no-repeat;
+  background-position: 0px 0px;
+  cursor: pointer;
+  padding-right: 2px;
+  width: 11px;
+  height: 11px;
+}
+
+.rowElements{
+  text-align: center;
+}
+
+tr.rowElements:hover{
+  background-color: #E8E6F7;
+}
+
+.HTMLSnipet{
+  color: #4F8FE3
+}
+
+.rowElements td {
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.HTMLSnipet:hover{
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ArgBtn {
+  -moz-box-shadow:inset 0px 1px 0px 0px #cae3fc;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #cae3fc;
+  box-shadow:inset 0px 1px 0px 0px #cae3fc;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #79bbff), color-stop(1, #4197ee) );
+  background:-moz-linear-gradient( center top, #79bbff 5%, #4197ee 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#79bbff', endColorstr='#4197ee');
+  background-color:#79bbff;
+  -webkit-border-top-left-radius:6px;
+  -moz-border-radius-topleft:6px;
+  border-top-left-radius:6px;
+  -webkit-border-top-right-radius:6px;
+  -moz-border-radius-topright:6px;
+  border-top-right-radius:6px;
+  -webkit-border-bottom-right-radius:6px;
+  -moz-border-radius-bottomright:6px;
+  border-bottom-right-radius:6px;
+  -webkit-border-bottom-left-radius:6px;
+  -moz-border-radius-bottomleft:6px;
+  border-bottom-left-radius:6px;
+  text-indent:0;
+  border:1px solid #469df5;
+  display:inline-block;
+  color:#ffffff;
+  font-weight:bold;
+  font-style:normal;
+  text-decoration:none;
+  text-align:center;
+  text-shadow:1px 1px 0px #287ace;
+}
+.ArgBtn:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #4197ee), color-stop(1, #79bbff) );
+  background:-moz-linear-gradient( center top, #4197ee 5%, #79bbff 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#4197ee', endColorstr='#79bbff');
+  background-color:#4197ee;
+}.ArgBtn:active {
+  position:relative;
+  top:1px;
+}
+
+.btn{
+  padding: 5px 10px 5px 10px;
+  margin: 2px 2px 2px 2px;
+  float: right;
+}
+
+.fuzzBtn {
+  -moz-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+  box-shadow:inset 0px 1px 0px 0px #c1ed9c;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #9dce2c), color-stop(1, #8cb82b) );
+  background:-moz-linear-gradient( center top, #9dce2c 5%, #8cb82b 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#9dce2c', endColorstr='#8cb82b');
+  background-color:#9dce2c;
+  -webkit-border-top-left-radius:6px;
+  -moz-border-radius-topleft:6px;
+  border-top-left-radius:6px;
+  -webkit-border-top-right-radius:6px;
+  -moz-border-radius-topright:6px;
+  border-top-right-radius:6px;
+  -webkit-border-bottom-right-radius:6px;
+  -moz-border-radius-bottomright:6px;
+  border-bottom-right-radius:6px;
+  -webkit-border-bottom-left-radius:6px;
+  -moz-border-radius-bottomleft:6px;
+  border-bottom-left-radius:6px;
+  text-indent:0;
+  border:1px solid #83c41a;
+  display:inline-block;
+  color:#ffffff;
+  font-weight:bold;
+  font-style:normal;
+  text-decoration:none;
+  text-align:center;
+  text-shadow:1px 1px 0px #689324;
+  margin-top: 5px;
+  font-size:15px;
+}
+.fuzzBtn:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #8cb82b), color-stop(1, #9dce2c) );
+  background:-moz-linear-gradient( center top, #8cb82b 5%, #9dce2c 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#8cb82b', endColorstr='#9dce2c');
+  background-color:#8cb82b;
+}.fuzzBtn:active {
+  position:relative;
+  top:1px;
+}
+
+#selectedFunctionName{
+  font-weight: bold;
+  font-size: 16px;
+  margin-top: 5px;
+}
+
+.form-group.function{
+  margin-bottom: 10px;
+}
+
+label.dependency{
+  width: 100%;
+  display: block;
+}
+
+label.generation{
+  width: 100%;
+  display: block;
+}
+
+.fuzzingForm{
+  padding: 7px;
+}
+
+.generationModule{
+  margin-bottom: 10px;
+}
+
+/* Table Sorting CSS */
+
+th.sort-header {
+  cursor:pointer;
+  background-color: #E6E3FF;
+  }
+th.sort-header::-moz-selection,
+th.sort-header::selection {
+  background:transparent;
+  }
+table th.sort-header:after {
+  content:'';
+  float:right;
+  margin-top:7px;
+  border-width:0 4px 4px;
+  border-style:solid;
+  border-color:#404040 transparent;
+  visibility:hidden;
+  }
+table th.sort-header:hover:after {
+  visibility:visible;
+  }
+table th.sort-up:after,
+table th.sort-down:after,
+table th.sort-down:hover:after {
+  visibility:visible;
+  opacity:0.4;
+  }
+table th.sort-up:after {
+  border-bottom:none;
+  border-width:4px 4px 0;
+  }
+
+.anomaly{
+  color: red;
+  font-weight: bold;
+}
+/*************************************************************************************************/
+
+/* Firebug Tracing Console customization. All messages from this example use this color.
+   This helps to distinguish logs from those coming from Firebug
+   Rule syntax: .DBG_<ext-id>
+   See: http://getfirebug.com/wiki/index.php/FBTrace for more details */
+.DBG_FIRESTORM {
+    color: rgb(255, 171, 0);
+}

@@ -1,0 +1,3 @@
+content  firestorm chrome/content/
+skin     firestorm classic/1.0   chrome/skin/classic/
+locale   firestorm en-US         chrome/locale/en-US/
