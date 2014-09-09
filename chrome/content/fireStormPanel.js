@@ -75,6 +75,28 @@ Firebug.FireStormPanel.prototype = Obj.extend(Firebug.Panel,
             FBTrace.sysout("fireStorm; FireStormPanel.show",{
                 "state": state
             });
+        if (!this.context.Firestorm.Analysisfinished) {
+
+            var scripts = Utils.mapToList(this.context.sourceFileMap);
+
+            // filter the scripts if we are on the firestorm-test plateform
+            if (this.context.window.document.title === "Firestorm-Tests")
+              scripts = scripts.filter(function(script){
+                return script.href.indexOf("/js/") === -1 && script.href.indexOf(".js") !== -1;
+              });
+
+            this.context.Firestorm.Analysisfinished = false;
+            ScriptAnalyser.populateAnalysisStack(scripts);
+            this.Analysing.render(this.panelNode);
+
+            this.context.Firestorm.checkProgressIntervalId = Utils.setInterval.call(this, this.checkProgress, 500);
+
+            if (FBTrace.DBG_FIRESTORM)
+                FBTrace.sysout("fireStorm; FireStormPanel.show.analyse", {
+                    "Scripts": scripts,
+                    "Context": this.context
+                });
+        }
     },
 
     refresh: function()
@@ -112,14 +134,6 @@ Firebug.FireStormPanel.prototype = Obj.extend(Firebug.Panel,
             });
 
         buttons.push({
-            type: "menu",
-            label: "firestorm.toolbar.scripts.label",
-            tooltiptext: this.getScriptMenuToolTipText(),
-            items: this.getMenuButtonItems(),
-            disabled: !this.hasScripts()
-        });
-
-        buttons.push({
             id: "toggleFuzzingSidePanelButton",
             label: "Fuzzer",
             tooltiptext: "firestorm.toolbar.fuzzer.tooltip",
@@ -127,40 +141,7 @@ Firebug.FireStormPanel.prototype = Obj.extend(Firebug.Panel,
             disabled: this.isSelectedFunction()
         });
 
-        buttons.push({
-            label: "firestorm.toolbar.indexer.label",
-            tooltiptext: "firestorm.toolbar.indexer.tooltip",
-            command: FBL.bindFixed(ModuleIndexer.startIndex, ModuleIndexer)
-        });
-
         return buttons;
-    },
-
-    /**
-     * Generates the script list of the current web page
-     * 
-     * @return {Array} List of all the scripts as buttons
-     */
-    getMenuButtonItems: function()
-    {
-        var items = [];
-
-        if (!this.hasScripts())
-            items.push({
-                label: "firestorm.toolbar.scripts.noScript"
-            }); 
-
-        var scripts = Utils.mapToList(this.context.sourceFileMap);
-
-        for (var i = 0; i < scripts.length ; i++){
-            items.push({
-                nol10n: true,
-                label: Utils.getFileName(scripts[i].href),
-                command: FBL.bindFixed(this.onScriptSelection, this, scripts, i)
-            }); 
-        }
-
-        return items;
     },
 
     /**
@@ -294,30 +275,6 @@ Firebug.FireStormPanel.prototype = Obj.extend(Firebug.Panel,
     },
 
     /**
-     * Method called when a script is selected in the script list. It calls the analyser
-     * 
-     * @param  {Array}      Scripts Script List
-     * @param  {Integer}    i       Index of the selected script
-     * @return {void}  
-     */
-    onScriptSelection: function(Scripts, i)
-    {
-        this.context.Firestorm.Analysisfinished = false;
-        ScriptAnalyser.populateAnalysisStack(Scripts, i);
-        this.Analysing.render(this.panelNode);
-
-        this.context.Firestorm.checkProgressIntervalId = 
-            Utils.setInterval.call(this, this.checkProgress, 500);
-
-        if (FBTrace.DBG_FIRESTORM)
-            FBTrace.sysout("fireStorm; FireStormPanel.onScriptSelection",{
-                "Scripts": Scripts,
-                "Context": this.context,
-                "i":i
-            });
-    },
-
-    /**
      * Called to fold the side panel
      * 
      * @return {void} 
@@ -426,7 +383,7 @@ Firebug.FireStormPanel.prototype = Obj.extend(Firebug.Panel,
 
         if (FBTrace.DBG_FIRESTORM)
             FBTrace.sysout("fireStorm; FireStormPanel.checkProgress",{
-                "analysisStack": this.context.Firestorm.analysisStack,
+                "analysisStack": this.context.Firestorm.analysisStack
         });
     },
 
@@ -759,7 +716,7 @@ with (Domplate) {
                     level: level,
                     indent: level*16,
                     hasChildren: false,
-                    usedFunction: true,
+                    usedFunction: true
                 });
             }
 
@@ -821,7 +778,7 @@ with (Domplate) {
                     BR(),
                     H3(Locale.$STR("firestorm.panel.fuzzingResults.reference")),
                     TABLE({
-                            class:"referenceTable",
+                            class:"referenceTable"
                         },
                         TBODY({
                                 class:"referenceTableRoot"

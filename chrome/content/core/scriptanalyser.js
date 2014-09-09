@@ -83,13 +83,12 @@ Firebug.ScriptAnalyser = Obj.extend(Firebug.Module,
      * Populates the analysis stack respecting the dependency order
      * 
      * @param  {Array}      sourceFiles     List of all the source files
-     * @param  {Integer}    i               Index of the selected source file
      * @return {void}             
      */
-    populateAnalysisStack: function(sourceFiles, i)
+    populateAnalysisStack: function(sourceFiles)
     {
 
-        for (var j = i ; j >= 0; j--){
+        for (var j = sourceFiles.length ; j >= 0; j--){
             if (!this.isAnalysed(sourceFiles[j])){
                 this.context.Firestorm.analysisStack.push(sourceFiles[j]);
             }
@@ -99,9 +98,7 @@ Firebug.ScriptAnalyser = Obj.extend(Firebug.Module,
             FBTrace.sysout("fireStorm; ScriptAnalyser.populateAnalysisStack", {
                 "sourceFiles": sourceFiles,
                 "Stack": this.context.Firestorm.analysisStack,
-                "context": this.context,
-                "i": i
-
+                "context": this.context
             });  
 
         this.analyse(this.context.Firestorm.analysisStack.pop());
@@ -166,7 +163,6 @@ Firebug.ScriptAnalyser = Obj.extend(Firebug.Module,
      */
     startWorkerAnalysis: function(functionTree, str)
     {
-
         this.worker.postMessage({
             command: "analyse",
             payload: {
@@ -175,7 +171,6 @@ Firebug.ScriptAnalyser = Obj.extend(Firebug.Module,
                 "source": str
             }
         });
-
     },
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -186,7 +181,7 @@ Firebug.ScriptAnalyser = Obj.extend(Firebug.Module,
      * Method called to launch a script page analysis. It starts by retrieving the script
      *  content.
      *  
-     * @param  {Array}      sourceFiles Array containing the source files
+     * @param  {sourceFile}      sourceFiles Array containing the source files
      * @return {void}
      */
     analyse: function(sourceFile)
@@ -208,15 +203,6 @@ Firebug.ScriptAnalyser = Obj.extend(Firebug.Module,
                     Utils.linesArrayToString(scriptLoaded),
                     scriptLoaded.length +1
                 );
-
-                /*
-                AST (Abstract Sythax tree) possible use for optimisation purposes.
-                    TODO implement in version 2.0 of the analyser
-                To use uncoment the import statement for the reflection API
-                FBTrace.sysout("fireStorm; ScriptAnalyser.analyse TEST built in parser", {
-                    "parsed Script": Reflect.parse(Utils.linesArrayToString(scriptLoaded))
-                });
-                */
                 
             });
         }else{

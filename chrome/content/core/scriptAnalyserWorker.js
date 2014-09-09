@@ -15,7 +15,7 @@ importScripts(
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Global variables
 
-const WORKER_DEBUG = true ;
+const WORKER_DEBUG = false ;
 
 const _identifier = "Identifier";
 const _functionDeclaration = "FunctionDeclaration";
