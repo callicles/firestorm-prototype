@@ -15,7 +15,7 @@ importScripts(
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 // Global variables
 
-const WORKER_DEBUG = false ;
+const WORKER_DEBUG = true ;
 
 const _identifier = "Identifier";
 const _functionDeclaration = "FunctionDeclaration";
@@ -95,7 +95,7 @@ onmessage = function(event){
 
 
         Analyser.mapSourceLines(event.data.payload.source);
-        Analyser.functionDeclarationIndexer(newScriptRoot, AST);
+        var calls = Analyser.functionDeclarationIndexer(newScriptRoot, AST);
 
         newScriptRoot.range.start = 0;
         newScriptRoot.range.end = event.data.payload.source.length;
@@ -104,7 +104,7 @@ onmessage = function(event){
 
 
         var response = Analyser.functionUseIndexer(
-            AST,
+            calls,
             functionTree
         );
 
@@ -155,12 +155,13 @@ var Analyser = {
      *
      * @param scriptRoot function Leaf to attach function declaration to
      * @param AST Abstract Syntax tree of the file
-     * @return {functionLeaf}
+     * @return {Array} call function list
      */
     functionDeclarationIndexer: function(scriptRoot, AST){
 
         var functionParentStack = [scriptRoot],
             nodeStack = [],
+            calls = [],
             self = this;
 
         if(WORKER_DEBUG)
@@ -181,11 +182,11 @@ var Analyser = {
                     functionParentStack.push(newFunctionLeaf);
                     node.indexMarker = true;
 
-                } else if (node.type === _functionExpression)
-                    switch(parent.type){
+                } else if (node.type === _functionExpression) {
+                    switch (parent.type) {
                         case _assignmentExpression:
                             var newFunctionLeaf = self.addObjectPropertyFunctionAssignment(
-                                functionParentStack[functionParentStack.length-1],
+                                functionParentStack[functionParentStack.length - 1],
                                 parent
                             );
                             functionParentStack.push(newFunctionLeaf);
@@ -194,9 +195,11 @@ var Analyser = {
 
                         case _variableDeclarator:
                             var newFunctionLeaf = self.addVariableFunctionAssignment(
-                                functionParentStack[functionParentStack.length-1],
+                                functionParentStack[functionParentStack.length - 1],
                                 parent,
-                                nodeStack.map(function(node){return node}).reverse()[1]
+                                nodeStack.map(function (node) {
+                                    return node
+                                }).reverse()[1]
                             );
                             functionParentStack.push(newFunctionLeaf);
                             node.indexMarker = true;
@@ -204,7 +207,7 @@ var Analyser = {
 
                         case _property:
                             var newFunctionLeaf = self.addObjectPropertyToObject(
-                                functionParentStack[functionParentStack.length-1],
+                                functionParentStack[functionParentStack.length - 1],
                                 node,
                                 parent,
                                 nodeStack
@@ -215,6 +218,9 @@ var Analyser = {
                             }
                             break;
                     }
+
+                } else if (node.type === _callExpression)
+                    calls.push(node);
                 nodeStack.push(node);
             },
             leave: function(node){
@@ -223,6 +229,8 @@ var Analyser = {
                 nodeStack.pop();
             }
         });
+
+        return calls;
     },
 
     /**
@@ -357,7 +365,6 @@ var Analyser = {
             newLeaf = undefined,
             index = 0;
 
-
         // We crawl the stack to find the object declaration in which is declared the function
         for (; index < orderedStack.length && !foundObjectRoot ; index++) {
             cursor = orderedStack[index];
@@ -448,26 +455,12 @@ var Analyser = {
     /**
      * Function to complete the function tree with the functions calls 
      * 
-     * @param  {Object}         AST            Abstract Syntax tree of the function
+     * @param  {Array}          calls            Abstract Syntax tree of the function
      * @param  {functionTree}   parentFunction function Tree to get the references from
      * @return {functionTree}                  Completed function tree
      */
-    functionUseIndexer: function(AST, parentFunction)
+    functionUseIndexer: function(calls, parentFunction)
     {
-        var calls = [];                               
-                                                        
-        if (WORKER_DEBUG)
-            debugMessage("fireStorm; ScriptAnalyserWorker.functionUseIndexer",{
-                    "AST": AST
-                });
-
-        estraverse.traverse(AST, {                                                                      // Go through all the tree to find function calls   
-            enter: function(node){
-                if (node.type === 'CallExpression')
-                    calls.push(node);
-            }
-        });
-
         if (WORKER_DEBUG)
             debugMessage("fireStorm; ScriptAnalyserWorker.functionUseIndexer \
                 Calls Expressions found", {
