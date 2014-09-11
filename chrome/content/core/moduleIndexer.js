@@ -31,22 +31,9 @@ var moduleIndexer = Obj.extend(Firebug.Module,
     {
         Firebug.Module.initialize.apply(this, arguments);
 
-        function getAddOnPath(self,fn){                                                                 // Litle routine to get the addOn path
-            AddonManager.getAllAddons(function(addons) {
-                fn(self, addons.filter(function(addon){
-                    return addon.name == "Fire Storm";
-                })[0].getResourceURI().spec);
-            });
-        }
-
-        getAddOnPath(this, function(self,path){
-            self.firestormNSI = path;
-        });
-
         if (FBTrace.DBG_FIRESTORM_INDEXER)
-            FBTrace.sysout("fireStorm; moduleIndexer.initialize",{
-                "fireStormPath" :this.firestormNSI
-            });
+            FBTrace.sysout("fireStorm; moduleIndexer.initialize");
+
     },
 
     shutdown: function()
@@ -62,16 +49,38 @@ var moduleIndexer = Obj.extend(Firebug.Module,
 
         if (FBTrace.DBG_FIRESTORM_INDEXER)
             FBTrace.sysout("fireStorm; moduleIndexer.loadedContext", {
-                path: this.firestormNSI
+
             });
+
         if (!context.Firestorm.genModules){
             context.Firestorm.genModules = [];
             context.Firestorm.detectModules = [];
             context.Firestorm.brainModules = [];
         }
 
-        Utils.setTimeout.call(this, this.startIndex, 500);
+        var p = new Promise(function(resolve, reject){
+            AddonManager.getAllAddons(function(addons){
+                const firestormAddonURI = addons.find(function(addon){
+                    return addon.id === "callicles@firestorm.fr";
+                }).getResourceURI().spec;
+                if (firestormAddonURI)
+                    resolve(firestormAddonURI);
+                else
+                    reject(firestormAddonURI);
+            });
+        });
 
+        var self = this;
+
+        p.then(
+            function(URI){
+                self.firestormNSI = URI;
+                self.startIndex()
+            },
+            function(URI){
+                FBTrace.sysout("fireStorm; ERROR promise rejected", {URI: URI});
+            }
+        );
     },
 
      // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -83,6 +92,9 @@ var moduleIndexer = Obj.extend(Firebug.Module,
      * @return {void}
      */
     startIndex: function(){
+
+        if (FBTrace.DBG_FIRESTORM_INDEXER)
+            FBTrace.sysout("fireStorm; moduleIndexer.startIndex");
 
         this.indexModules({
             moduleType: "generation",
@@ -118,7 +130,6 @@ var moduleIndexer = Obj.extend(Firebug.Module,
      * @return {void}
      */
     indexModules: function(moduleCaract){
-        var moduleList = [];
 
         var IOService = Components.classes["@mozilla.org/network/io-service;1"]
             .getService(Components.interfaces.nsIIOService);
@@ -143,12 +154,12 @@ var moduleIndexer = Obj.extend(Firebug.Module,
 
             while(fileList.hasMoreElements()){
                 var entry = fileList.getNext();
-                entry.QueryInterface(Components.interfaces.nsIFile)
+                entry.QueryInterface(Components.interfaces.nsIFile);
                 var fileName = entry.leafName;
 
                 if (fileName.contains(moduleCaract.suffix) && 
                         !this.workerModuleList.some(
-                            function(elem, index, array){
+                            function(elem){
                                 return elem.name === this;
                             },
                             fileName

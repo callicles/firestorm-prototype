@@ -464,7 +464,8 @@ var Analyser = {
         if (WORKER_DEBUG)
             debugMessage("fireStorm; ScriptAnalyserWorker.functionUseIndexer \
                 Calls Expressions found", {
-                "calls": calls
+                "calls": calls,
+                "parentFunction": parentFunction
             });
 
         parentFunction = this.depthfirstSeach(parentFunction, calls);                                   // For all the found calls - match it with a function
@@ -549,13 +550,13 @@ var Analyser = {
                                     this.getNestedDegree(cursor)+1
                                 )
                             ){
-                            /*
-                                debugMessage("fireStorm; ScriptAnalyserWorker.depthfirstSeach \
+
+                                debugMessage("fireStorm; ScriptAnalyserWorker.depthFirstSearch \
                                     DECLARATION NOT FOUND", {
                                     "cursor": cursor,
                                     "calls[i]": calls[i]
                                 });
-                            */
+
                             }
 
                         }
